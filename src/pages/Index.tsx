@@ -7,6 +7,7 @@ import HabitTracker from '@/components/HabitTracker';
 import NotesPage from '@/pages/NotesPage';
 import CalendarPage from '@/pages/CalendarPage';
 import PromodoPage from '@/pages/PromodoPage';
+import AssignmentTracker from '@/components/AssignmentTracker';
 
 const Index = () => {
   const [activeView, setActiveView] = useState('Tracker');
@@ -20,6 +21,7 @@ const Index = () => {
           {activeView === 'Tracker' && (
             <>
               <HabitTracker />
+              <AssignmentTracker />
               <Tracker />
             </>
           )}

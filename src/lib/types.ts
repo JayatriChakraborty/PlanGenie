@@ -1,4 +1,3 @@
-
 export interface TrackerItem {
   id: string;
   text: string;
@@ -11,4 +10,14 @@ export interface UserProfile {
   lastName?: string;
   email?: string;
   profileImage?: string;
+}
+
+export interface Assignment {
+  id:string;
+  topic: string;
+  dueDate: any;
+  started: boolean;
+  inProgress: boolean;
+  handedIn: boolean;
+  createdAt?: any;
 }
