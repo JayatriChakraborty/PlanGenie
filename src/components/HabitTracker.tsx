@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -5,23 +6,11 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { Plus, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 import { format, getDaysInMonth, addMonths, subMonths, getYear, getMonth } from 'date-fns';
-
-interface Habit {
-  id: string;
-  text: string;
-  completions: Record<string, boolean>; // YYYY-MM-DD
-}
-
-const initialHabits: Habit[] = [
-  { id: '1', text: 'Morning workout', completions: { '2025-06-01': true, '2025-06-03': true, '2025-06-05': true } },
-  { id: '2', text: 'Meditate 10 mins', completions: { '2025-06-01': true, '2025-06-02': true, '2025-06-03': true, '2025-06-04': true } },
-  { id: '3', text: 'No social media after 10 PM', completions: {} },
-  { id: '4', text: 'Drink 2L water', completions: { '2025-06-01': true, '2025-06-02': true, '2025-06-03': true, '2025-06-04': true, '2025-06-05': true, '2025-06-06': true, '2025-06-07': true } },
-  { id: '5', text: 'Read 20 pages', completions: {} },
-];
+import { useHabits } from '@/hooks/useHabits';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const HabitTracker = () => {
-  const [habits, setHabits] = useState<Habit[]>(initialHabits);
+  const { habits, isLoading, addHabit, deleteHabit, toggleCompletion } = useHabits();
   const [newHabitText, setNewHabitText] = useState('');
   const [currentDate, setCurrentDate] = useState(new Date('2025-06-15'));
 
@@ -32,34 +21,27 @@ const HabitTracker = () => {
   const handleAddHabit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newHabitText.trim()) return;
-    const newHabit: Habit = {
-      id: Date.now().toString(),
-      text: newHabitText,
-      completions: {},
-    };
-    setHabits([...habits, newHabit]);
+    addHabit(newHabitText);
     setNewHabitText('');
   };
 
-  const handleDeleteHabit = (habitId: string) => {
-    setHabits(habits.filter(habit => habit.id !== habitId));
-  };
-
-  const toggleCompletion = (habitId: string, day: number) => {
+  const handleToggleCompletion = (habit: any, day: number) => {
     const dateKey = format(new Date(year, month, day), 'yyyy-MM-dd');
-    setHabits(habits.map(habit => {
-      if (habit.id === habitId) {
-        const newCompletions = { ...habit.completions };
-        if (newCompletions[dateKey]) {
-          delete newCompletions[dateKey];
-        } else {
-          newCompletions[dateKey] = true;
-        }
-        return { ...habit, completions: newCompletions };
-      }
-      return habit;
-    }));
+    toggleCompletion({ habit, dateKey });
   };
+  
+  if (isLoading) {
+     return (
+       <div className="p-4 md:p-6">
+         <h2 className="text-xl font-bold text-foreground mb-4 font-serif">Daily Habit Tracker</h2>
+         <div className="space-y-2 rounded-md border p-4">
+           <Skeleton className="h-8 w-full" />
+           <Skeleton className="h-8 w-full" />
+           <Skeleton className="h-8 w-full" />
+         </div>
+       </div>
+     );
+  }
 
   return (
     <div className="p-4 md:p-6">
@@ -102,7 +84,7 @@ const HabitTracker = () => {
                         variant="ghost"
                         size="icon"
                         className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
-                        onClick={() => handleDeleteHabit(habit.id)}
+                        onClick={() => deleteHabit(habit.id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -115,7 +97,7 @@ const HabitTracker = () => {
                         <div className="flex justify-center">
                             <Checkbox
                               checked={!!habit.completions[dateKey]}
-                              onCheckedChange={() => toggleCompletion(habit.id, day)}
+                              onCheckedChange={() => handleToggleCompletion(habit, day)}
                             />
                         </div>
                       </td>

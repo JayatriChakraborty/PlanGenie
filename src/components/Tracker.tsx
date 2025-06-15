@@ -1,45 +1,36 @@
 
 import React, { useState } from 'react';
-import { TrackerItem } from '@/lib/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { X, Plus } from 'lucide-react';
 import { AnimatePresence, motion } from 'framer-motion';
-
-const initialItems: TrackerItem[] = [
-  { id: '1', text: 'Drink 8 glasses of water', completed: true },
-  { id: '2', text: 'Read 10 pages of a book', completed: false },
-  { id: '3', text: '30 minutes of exercise', completed: false },
-];
+import { useTracker } from '@/hooks/useTracker';
+import { Skeleton } from '@/components/ui/skeleton';
 
 const Tracker = () => {
-  const [items, setItems] = useState<TrackerItem[]>(initialItems);
+  const { items, isLoading, addItem, toggleItem, deleteItem } = useTracker();
   const [newItemText, setNewItemText] = useState('');
 
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
     if (!newItemText.trim()) return;
-    const newItem: TrackerItem = {
-      id: Date.now().toString(),
-      text: newItemText,
-      completed: false,
-    };
-    setItems([...items, newItem]);
+    addItem(newItemText);
     setNewItemText('');
   };
 
-  const toggleItem = (id: string) => {
-    setItems(
-      items.map((item) =>
-        item.id === id ? { ...item, completed: !item.completed } : item
-      )
+  if (isLoading) {
+    return (
+      <div className="p-4 md:p-6">
+        <h2 className="text-xl font-bold text-foreground mb-6 font-serif">Checklist</h2>
+        <div className="space-y-3">
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-12 w-full" />
+          <Skeleton className="h-12 w-full" />
+        </div>
+      </div>
     );
-  };
-
-  const deleteItem = (id: string) => {
-    setItems(items.filter((item) => item.id !== id));
-  };
+  }
 
   return (
     <div className="p-4 md:p-6">
@@ -73,7 +64,7 @@ const Tracker = () => {
               <Checkbox
                 id={`item-${item.id}`}
                 checked={item.completed}
-                onCheckedChange={() => toggleItem(item.id)}
+                onCheckedChange={() => toggleItem({ id: item.id, completed: item.completed })}
                 className="w-5 h-5 mr-3 rounded-md border-primary"
               />
               <label
