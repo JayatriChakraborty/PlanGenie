@@ -1,5 +1,6 @@
 
 import { useState, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,10 +14,11 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Camera, Trash2, User as UserIcon, Upload } from 'lucide-react';
+import { Camera, Trash2, User as UserIcon, Upload, ChevronLeft } from 'lucide-react';
 import { toast } from 'sonner';
 
 const ProfilePage = () => {
+  const navigate = useNavigate();
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -40,7 +42,12 @@ const ProfilePage = () => {
 
   return (
     <div className="container mx-auto max-w-2xl py-8 px-4">
-      <h1 className="text-3xl font-bold mb-8 text-center">Profile</h1>
+      <div className="relative flex items-center justify-center mb-8">
+        <Button variant="ghost" size="icon" className="absolute left-0" onClick={() => navigate(-1)}>
+          <ChevronLeft className="h-6 w-6" />
+        </Button>
+        <h1 className="text-3xl font-bold">Profile</h1>
+      </div>
 
       <div className="flex justify-center mb-8">
         <Dialog>
@@ -123,4 +130,3 @@ const ProfilePage = () => {
 };
 
 export default ProfilePage;
-
