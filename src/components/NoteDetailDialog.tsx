@@ -29,6 +29,7 @@ const NoteDetailDialog = ({ note, isOpen, onOpenChange, updateNote }: NoteDetail
         </DialogHeader>
         <div className="py-4 max-h-[60vh] overflow-y-auto text-foreground">
           <ReactMarkdown
+            key={note.content}
             remarkPlugins={[remarkGfm]}
             components={{
               h2: ({ ...props }) => <h2 className="text-xl font-bold mt-4 mb-2 border-b pb-2" {...props} />,
