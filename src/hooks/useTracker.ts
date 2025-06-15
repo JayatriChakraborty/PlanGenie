@@ -4,30 +4,29 @@ import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy,
 import { db } from '@/lib/firebase';
 import { TrackerItem } from '@/lib/types';
 import { toast } from 'sonner';
+import { useAuth } from './useAuth';
 
-const userId = 'testUser'; // Hardcoded user ID
-
-const getItems = async (): Promise<TrackerItem[]> => {
+const getItems = async (userId: string): Promise<TrackerItem[]> => {
   const itemsCollectionRef = collection(db, 'users', userId, 'trackerItems');
   const q = query(itemsCollectionRef, orderBy('createdAt', 'asc'));
   const querySnapshot = await getDocs(q);
   return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })) as TrackerItem[];
 };
 
-const addItem = async (text: string) => {
+const addItem = async ({ text, userId }: { text: string; userId: string; }) => {
   const itemsCollectionRef = collection(db, 'users', userId, 'trackerItems');
   const newItem = { text, completed: false, createdAt: serverTimestamp() };
   const docRef = await addDoc(itemsCollectionRef, newItem);
   return { id: docRef.id, ...newItem };
 };
 
-const toggleItem = async ({ id, completed }: { id: string; completed: boolean }) => {
+const toggleItem = async ({ id, completed, userId }: { id: string; completed: boolean; userId: string; }) => {
   const itemDocRef = doc(db, 'users', userId, 'trackerItems', id);
   await updateDoc(itemDocRef, { completed: !completed });
   return { id, completed: !completed };
 };
 
-const deleteItem = async (id: string) => {
+const deleteItem = async ({ id, userId }: { id: string; userId: string; }) => {
   const itemDocRef = doc(db, 'users', userId, 'trackerItems', id);
   await deleteDoc(itemDocRef);
   return id;
@@ -35,15 +34,25 @@ const deleteItem = async (id: string) => {
 
 export const useTracker = () => {
   const queryClient = useQueryClient();
+  const { user: authUser, isLoading: authLoading } = useAuth();
+  const userId = authUser?.uid;
+
   const queryKey = ['trackerItems', userId];
 
-  const { data: items, isLoading } = useQuery({
+  const { data: items, isLoading: itemsLoading } = useQuery({
     queryKey,
-    queryFn: getItems,
+    queryFn: () => {
+      if (!userId) return [];
+      return getItems(userId);
+    },
+    enabled: !!userId,
   });
 
   const addItemMutation = useMutation({
-    mutationFn: addItem,
+    mutationFn: (text: string) => {
+      if (!userId) throw new Error("User not authenticated.");
+      return addItem({ text, userId });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
       toast.success('Goal added!');
@@ -52,7 +61,10 @@ export const useTracker = () => {
   });
 
   const toggleItemMutation = useMutation({
-    mutationFn: toggleItem,
+    mutationFn: ({ id, completed }: { id: string; completed: boolean }) => {
+      if (!userId) throw new Error("User not authenticated.");
+      return toggleItem({ id, completed, userId });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
     },
@@ -60,7 +72,10 @@ export const useTracker = () => {
   });
 
   const deleteItemMutation = useMutation({
-    mutationFn: deleteItem,
+    mutationFn: (id: string) => {
+      if (!userId) throw new Error("User not authenticated.");
+      return deleteItem({ id, userId });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
       toast.success('Goal deleted.');
@@ -70,7 +85,7 @@ export const useTracker = () => {
 
   return {
     items: items ?? [],
-    isLoading,
+    isLoading: authLoading || itemsLoading,
     addItem: addItemMutation.mutate,
     toggleItem: toggleItemMutation.mutate,
     deleteItem: deleteItemMutation.mutate,
