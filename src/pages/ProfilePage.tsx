@@ -1,3 +1,4 @@
+
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -123,7 +124,7 @@ const ProfilePage = () => {
   return (
     <div className="container mx-auto max-w-2xl py-8 px-4">
       <div className="relative flex items-center justify-center mb-8">
-        <Button variant="ghost" size="icon" className="absolute left-0" onClick={() => navigate(-1)}>
+        <Button variant="ghost" size="icon" className="absolute left-0" onClick={() => navigate('/')}>
           <ChevronLeft className="h-6 w-6" />
         </Button>
         <h1 className="text-3xl font-bold">Profile</h1>
