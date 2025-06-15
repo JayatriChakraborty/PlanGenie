@@ -1,10 +1,10 @@
 
-import { List, Calendar, Timer, Notes } from 'lucide-react';
+import { List, Calendar, Timer, StickyNote } from 'lucide-react';
 
 const navItems = [
   { name: 'Tracker', icon: List, active: true },
   { name: 'Calendar', icon: Calendar, active: false },
-  { name: 'Notes', icon: Notes, active: false },
+  { name: 'Notes', icon: StickyNote, active: false },
   { name: 'Promodo', icon: Timer, active: false },
 ];
 
