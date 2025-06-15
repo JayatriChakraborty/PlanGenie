@@ -4,13 +4,11 @@ import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy,
 import { db } from '@/lib/firebase';
 import { Note } from '@/types/notes';
 import { toast } from 'sonner';
-
-// Hardcoded user ID for now. In a real app, this would come from an auth context.
-const userId = 'testUser';
+import { useAuth } from './useAuth';
 
 // --- API Functions ---
 
-const getNotes = async (): Promise<Note[]> => {
+const getNotes = async (userId: string): Promise<Note[]> => {
   const notesCollectionRef = collection(db, 'users', userId, 'notes');
   const q = query(notesCollectionRef, orderBy('createdAt', 'desc'));
   const querySnapshot = await getDocs(q);
@@ -20,14 +18,14 @@ const getNotes = async (): Promise<Note[]> => {
   })) as Note[];
 };
 
-const addNote = async (note: Omit<Note, 'id'>) => {
+const addNote = async ({ note, userId }: { note: Omit<Note, 'id'>, userId: string }) => {
   const notesCollectionRef = collection(db, 'users', userId, 'notes');
   const newNote = { ...note, createdAt: serverTimestamp() };
   const docRef = await addDoc(notesCollectionRef, newNote);
   return { id: docRef.id, ...newNote };
 };
 
-const updateNote = async (note: Note) => {
+const updateNote = async ({ note, userId }: { note: Note, userId: string }) => {
   const noteDocRef = doc(db, 'users', userId, 'notes', note.id);
   // We only update title and content, not createdAt
   await updateDoc(noteDocRef, {
@@ -37,7 +35,7 @@ const updateNote = async (note: Note) => {
   return note;
 };
 
-const deleteNote = async (id: string) => {
+const deleteNote = async ({ id, userId }: { id: string, userId: string }) => {
   const noteDocRef = doc(db, 'users', userId, 'notes', id);
   await deleteDoc(noteDocRef);
   return id;
@@ -48,15 +46,24 @@ const deleteNote = async (id: string) => {
 
 export const useNotes = () => {
   const queryClient = useQueryClient();
+  const { user: authUser, isLoading: authLoading } = useAuth();
+  const userId = authUser?.uid;
   const queryKey = ['notes', userId];
 
   const notesQuery = useQuery({
     queryKey: queryKey,
-    queryFn: getNotes,
+    queryFn: () => {
+      if (!userId) return [];
+      return getNotes(userId);
+    },
+    enabled: !!userId,
   });
 
   const addNoteMutation = useMutation({
-    mutationFn: addNote,
+    mutationFn: (note: Omit<Note, 'id'>) => {
+      if (!userId) throw new Error("User not authenticated.");
+      return addNote({ note, userId });
+    },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey });
       toast.success('Note created!');
@@ -68,7 +75,10 @@ export const useNotes = () => {
   });
 
   const updateNoteMutation = useMutation({
-    mutationFn: updateNote,
+    mutationFn: (note: Note) => {
+        if (!userId) throw new Error("User not authenticated.");
+        return updateNote({ note, userId });
+    },
     onSuccess: (updatedNote) => {
       // Optimistically update the cache
       queryClient.setQueryData(queryKey, (oldData: Note[] = []) =>
@@ -83,7 +93,10 @@ export const useNotes = () => {
   });
 
   const deleteNoteMutation = useMutation({
-    mutationFn: deleteNote,
+    mutationFn: (id: string) => {
+        if (!userId) throw new Error("User not authenticated.");
+        return deleteNote({ id, userId });
+    },
     onSuccess: (deletedId) => {
       // Optimistically update the cache
       queryClient.setQueryData(queryKey, (oldData: Note[] = []) =>
@@ -99,7 +112,7 @@ export const useNotes = () => {
 
   return {
     notes: notesQuery.data ?? [],
-    isLoading: notesQuery.isLoading,
+    isLoading: authLoading || notesQuery.isLoading,
     addNote: addNoteMutation.mutate,
     updateNote: updateNoteMutation.mutate,
     deleteNote: deleteNoteMutation.mutate,
