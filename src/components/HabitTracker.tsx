@@ -1,10 +1,9 @@
-
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
-import { Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Plus, ChevronLeft, ChevronRight, Trash2 } from 'lucide-react';
 import { format, getDaysInMonth, addMonths, subMonths, getYear, getMonth } from 'date-fns';
 
 interface Habit {
@@ -40,6 +39,10 @@ const HabitTracker = () => {
     };
     setHabits([...habits, newHabit]);
     setNewHabitText('');
+  };
+
+  const handleDeleteHabit = (habitId: string) => {
+    setHabits(habits.filter(habit => habit.id !== habitId));
   };
 
   const toggleCompletion = (habitId: string, day: number) => {
@@ -78,7 +81,7 @@ const HabitTracker = () => {
           <table className="w-full text-sm border-collapse">
             <thead className="sticky top-0 bg-card z-10">
               <tr className="border-b">
-                <th className="p-2 text-left font-semibold min-w-[200px] sticky left-0 bg-card z-20 border-r">Habit</th>
+                <th className="p-2 text-left font-semibold min-w-[250px] sticky left-0 bg-card z-20 border-r">Habit</th>
                 {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => (
                   <th key={day} className="p-2 font-normal text-center w-12 border-r">
                     <div className="flex flex-col items-center">
@@ -91,8 +94,20 @@ const HabitTracker = () => {
             </thead>
             <tbody>
               {habits.map((habit) => (
-                <tr key={habit.id} className="border-b">
-                  <td className="p-2 font-medium sticky left-0 bg-card z-10 border-r">{habit.text}</td>
+                <tr key={habit.id} className="border-b group">
+                  <td className="p-2 font-medium sticky left-0 bg-card z-10 border-r">
+                    <div className="flex items-center justify-between">
+                      <span className="truncate pr-2">{habit.text}</span>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-8 w-8 text-muted-foreground hover:text-destructive opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0"
+                        onClick={() => handleDeleteHabit(habit.id)}
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  </td>
                   {Array.from({ length: daysInMonth }, (_, i) => i + 1).map(day => {
                     const dateKey = format(new Date(year, month, day), 'yyyy-MM-dd');
                     return (
@@ -132,4 +147,3 @@ const HabitTracker = () => {
 };
 
 export default HabitTracker;
-
