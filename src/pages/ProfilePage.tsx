@@ -1,5 +1,4 @@
-
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -14,31 +13,112 @@ import {
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Camera, Trash2, User as UserIcon, Upload, ChevronLeft } from 'lucide-react';
+import { Camera, Trash2, User as UserIcon, Upload, ChevronLeft, Save } from 'lucide-react';
 import { toast } from 'sonner';
+import { db, storage } from '@/lib/firebase';
+import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 const ProfilePage = () => {
+  // Using a hardcoded user ID for now. In a real app, this would come from an auth context.
+  const userId = 'testUser';
+
   const navigate = useNavigate();
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
 
   const takePictureRef = useRef<HTMLInputElement>(null);
   const uploadGalleryRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!userId) return;
+      setIsLoading(true);
+      try {
+        const userDocRef = doc(db, 'users', userId);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          const data = userDoc.data();
+          setFirstName(data.firstName || '');
+          setLastName(data.lastName || '');
+          setEmail(data.email || '');
+          setProfileImage(data.profileImage || null);
+        }
+      } catch (error) {
+        console.error("Error fetching profile:", error);
+        toast.error("Failed to load profile data.");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchProfile();
+  }, [userId]);
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
       const file = event.target.files[0];
-      setProfileImage(URL.createObjectURL(file));
-      toast.success("Profile picture updated!");
+      if (!userId) return;
+      const toastId = toast.loading("Uploading profile picture...");
+
+      try {
+        const storageRef = ref(storage, `profile_images/${userId}/${file.name}`);
+        const snapshot = await uploadBytes(storageRef, file);
+        const downloadURL = await getDownloadURL(snapshot.ref);
+
+        const userDocRef = doc(db, 'users', userId);
+        await setDoc(userDocRef, { profileImage: downloadURL }, { merge: true });
+
+        setProfileImage(downloadURL);
+        toast.success("Profile picture updated!", { id: toastId });
+      } catch (error) {
+        console.error("Error uploading file:", error);
+        toast.error("Failed to update profile picture.", { id: toastId });
+      }
     }
   };
 
-  const handleDeleteAccount = () => {
-    // Here you would typically show a confirmation dialog first
-    toast.error("Account deletion is not implemented yet.");
+  const handleSaveProfile = async () => {
+    if (!userId) return;
+    const toastId = toast.loading("Saving profile...");
+    try {
+      const userDocRef = doc(db, 'users', userId);
+      await setDoc(userDocRef, { firstName, lastName, email }, { merge: true });
+      toast.success("Profile saved successfully!", { id: toastId });
+    } catch (error) {
+      console.error("Error saving profile:", error);
+      toast.error("Failed to save profile.", { id: toastId });
+    }
   };
+
+  const handleDeleteAccount = async () => {
+    if (!window.confirm("Are you sure you want to delete your account? This action cannot be undone.")) {
+      return;
+    }
+    if (!userId) return;
+    const toastId = toast.loading("Deleting account...");
+    try {
+        const userDocRef = doc(db, 'users', userId);
+        await deleteDoc(userDocRef);
+        // Note: This does not delete associated data in Storage. A real implementation would need a Cloud Function for that.
+        toast.success("Account deleted successfully.", { id: toastId });
+        navigate('/');
+    } catch (error) {
+        console.error("Error deleting account:", error);
+        toast.error("Failed to delete account.", { id: toastId });
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen">
+        <p>Loading profile...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container mx-auto max-w-2xl py-8 px-4">
@@ -114,6 +194,13 @@ const ProfilePage = () => {
         <div className="space-y-2">
           <Label htmlFor="email">Email Address</Label>
           <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="john.doe@example.com" />
+        </div>
+        
+        <div className="flex justify-end">
+            <Button onClick={handleSaveProfile}>
+                <Save className="mr-2 h-4 w-4" />
+                Save Profile
+            </Button>
         </div>
         
         <div className="border-t pt-6 mt-6">
