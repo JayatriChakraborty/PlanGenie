@@ -17,8 +17,21 @@ const NotesPage = () => {
     setNotes([newNote, ...notes]);
   };
 
+  const updateNote = (updatedNote: Note) => {
+    const newNotes = notes.map((note) =>
+      note.id === updatedNote.id ? updatedNote : note
+    );
+    setNotes(newNotes);
+    if (selectedNote && selectedNote.id === updatedNote.id) {
+      setSelectedNote(updatedNote);
+    }
+  };
+
   const deleteNote = (id: string) => {
     setNotes(notes.filter(note => note.id !== id));
+    if (selectedNote && selectedNote.id === id) {
+      setSelectedNote(null);
+    }
   };
   
   const handleNoteClick = (note: Note) => {
@@ -57,6 +70,7 @@ const NotesPage = () => {
       
       <NoteDetailDialog
         note={selectedNote}
+        updateNote={updateNote}
         isOpen={!!selectedNote}
         onOpenChange={(isOpen) => {
           if (!isOpen) {
