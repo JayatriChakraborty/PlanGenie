@@ -6,36 +6,29 @@ import NoteCard from '@/components/NoteCard';
 import CreateNoteDialog from '@/components/CreateNoteDialog';
 import NoteDetailDialog from '@/components/NoteDetailDialog';
 import { Note } from '@/types/notes';
+import { useNotes } from '../hooks/useNotes';
 
 const NotesPage = () => {
-  const [notes, setNotes] = useState<Note[]>([]);
+  const { notes, isLoading, addNote, updateNote, deleteNote } = useNotes();
   const [isCreateDialogOpen, setCreateDialogOpen] = useState(false);
   const [selectedNote, setSelectedNote] = useState<Note | null>(null);
 
-  const addNote = (note: Omit<Note, 'id'>) => {
-    const newNote = { ...note, id: Date.now().toString() };
-    setNotes([newNote, ...notes]);
+  const handleNoteClick = (note: Note) => {
+    setSelectedNote(note);
   };
 
-  const updateNote = (updatedNote: Note) => {
-    const newNotes = notes.map((note) =>
-      note.id === updatedNote.id ? updatedNote : note
-    );
-    setNotes(newNotes);
+  const handleUpdateNote = (updatedNote: Note) => {
+    updateNote(updatedNote);
     if (selectedNote && selectedNote.id === updatedNote.id) {
       setSelectedNote(updatedNote);
     }
   };
 
-  const deleteNote = (id: string) => {
-    setNotes(notes.filter(note => note.id !== id));
+  const handleDeleteNote = (id: string) => {
+    deleteNote(id);
     if (selectedNote && selectedNote.id === id) {
       setSelectedNote(null);
     }
-  };
-  
-  const handleNoteClick = (note: Note) => {
-    setSelectedNote(note);
   };
 
   return (
@@ -47,11 +40,15 @@ const NotesPage = () => {
         </Button>
       </div>
 
-      {notes.length > 0 ? (
+      {isLoading ? (
+        <div className="text-center py-16 text-muted-foreground">
+          <p>Loading your notes...</p>
+        </div>
+      ) : notes.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 animate-fade-in">
           {notes.map((note, index) => (
             <div key={note.id} onClick={() => handleNoteClick(note)}>
-              <NoteCard note={note} onDelete={deleteNote} colorIndex={index} />
+              <NoteCard note={note} onDelete={handleDeleteNote} colorIndex={index} />
             </div>
           ))}
         </div>
@@ -70,7 +67,7 @@ const NotesPage = () => {
       
       <NoteDetailDialog
         note={selectedNote}
-        updateNote={updateNote}
+        updateNote={handleUpdateNote}
         isOpen={!!selectedNote}
         onOpenChange={(isOpen) => {
           if (!isOpen) {
