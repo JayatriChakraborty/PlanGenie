@@ -3,11 +3,9 @@ import { useQuery } from '@tanstack/react-query';
 import { doc, getDoc } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { UserProfile } from '@/lib/types';
+import { useAuth } from './useAuth';
 
-const userId = 'testUser'; // Hardcoded user ID
-
-const getUserProfile = async (): Promise<UserProfile | null> => {
-  if (!userId) return null;
+const getUserProfile = async (userId: string): Promise<UserProfile | null> => {
   const userDocRef = doc(db, 'users', userId);
   const userDoc = await getDoc(userDocRef);
   if (userDoc.exists()) {
@@ -17,12 +15,19 @@ const getUserProfile = async (): Promise<UserProfile | null> => {
 };
 
 export const useUser = () => {
+  const { user: authUser, isLoading: authLoading } = useAuth();
+  const userId = authUser?.uid;
+
   const queryKey = ['userProfile', userId];
 
-  const { data: user, isLoading } = useQuery<UserProfile | null>({
+  const { data: user, isLoading: profileLoading, ...rest } = useQuery({
     queryKey,
-    queryFn: getUserProfile,
+    queryFn: () => {
+      if (!userId) return null;
+      return getUserProfile(userId);
+    },
+    enabled: !!userId,
   });
 
-  return { user, isLoading, queryKey };
+  return { user, authUser, userId, isLoading: authLoading || (!!userId && profileLoading), queryKey, ...rest };
 };

@@ -22,12 +22,9 @@ import { useQueryClient } from '@tanstack/react-query';
 import { useUser } from '@/hooks/useUser';
 
 const ProfilePage = () => {
-  // Using a hardcoded user ID for now. In a real app, this would come from an auth context.
-  const userId = 'testUser';
-
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const { user, isLoading, queryKey } = useUser();
+  const { user, isLoading, queryKey, userId } = useUser();
 
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [firstName, setFirstName] = useState('');
