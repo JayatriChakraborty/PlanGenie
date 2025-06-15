@@ -3,6 +3,7 @@ import { CalEvent } from '@/types/events';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Card, CardContent } from '@/components/ui/card';
 import { format } from 'date-fns';
+import { Clock, MapPin } from 'lucide-react';
 
 interface EventListProps {
   events: CalEvent[];
@@ -33,6 +34,18 @@ const EventList = ({ events, month }: EventListProps) => {
                   <p className="text-sm text-muted-foreground">
                     {format(event.date, 'EEEE, MMMM d')}
                   </p>
+                  {event.time && (
+                    <div className="flex items-center text-sm text-muted-foreground mt-1">
+                      <Clock className="mr-1.5 h-3.5 w-3.5" />
+                      <span>{event.time}</span>
+                    </div>
+                  )}
+                  {event.location && (
+                    <div className="flex items-center text-sm text-muted-foreground mt-1">
+                      <MapPin className="mr-1.5 h-3.5 w-3.5" />
+                      <span>{event.location}</span>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
             ))}
