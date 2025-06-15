@@ -9,7 +9,7 @@ const Index = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="font-sans antialiased">
+    <div className="antialiased">
       <div className="relative min-h-screen w-full">
         <Header onMenuClick={() => setSidebarOpen(true)} />
         <Sidebar isOpen={isSidebarOpen} onClose={() => setSidebarOpen(false)} />
@@ -26,3 +26,4 @@ const Index = () => {
 };
 
 export default Index;
+

@@ -1,37 +1,39 @@
 
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    --background: 220 20% 96%; /* Light pastel blue-gray */
-    --foreground: 222.2 84% 4.9%;
+    --background: 40 30% 96%; /* Off-white/Beige */
+    --foreground: 30 10% 25%; /* Dark Brown/Gray */
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 40 30% 99%; /* Lighter beige */
+    --card-foreground: 30 10% 25%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 40 30% 99%;
+    --popover-foreground: 30 10% 25%;
 
-    --primary: 216 65% 55%; /* Pastel blue */
-    --primary-foreground: 210 40% 98%;
+    --primary: 90 20% 65%; /* Muted Green */
+    --primary-foreground: 90 20% 98%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 45 40% 90%; /* Light Yellow */
+    --secondary-foreground: 30 10% 25%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 40 20% 92%;
+    --muted-foreground: 30 8% 45%;
 
-    --accent: 330 80% 85%; /* Pastel pink */
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 0 50% 80%; /* Muted Pink/Red */
+    --accent-foreground: 30 10% 25%;
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 216 65% 55%;
+    --border: 30 10% 85%; /* Light gray-brown border */
+    --input: 30 10% 90%;
+    --ring: 90 20% 65%;
 
     --radius: 0.8rem;
   }
@@ -73,8 +75,8 @@
   }
 
   body {
-    @apply bg-background text-foreground;
-    background-image: linear-gradient(to top right, hsl(210, 80%, 92%), hsl(300, 80%, 92%));
+    @apply bg-background text-foreground font-sans;
     min-height: 100vh;
   }
 }
+

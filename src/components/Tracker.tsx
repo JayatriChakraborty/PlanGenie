@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { TrackerItem } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -43,7 +42,7 @@ const Tracker = () => {
 
   return (
     <div className="p-4 md:p-6">
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Daily Tracker</h2>
+      <h2 className="text-2xl font-bold text-foreground mb-6 font-serif">Daily Tracker</h2>
 
       <form onSubmit={handleAddItem} className="flex gap-2 mb-6">
         <Input
@@ -68,7 +67,7 @@ const Tracker = () => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9, x: -100 }}
               transition={{ duration: 0.3, ease: 'easeInOut' }}
-              className="flex items-center p-4 rounded-2xl shadow-md bg-white/40 backdrop-blur-sm border border-white/30"
+              className="flex items-center p-4 rounded-2xl shadow-md bg-card border"
             >
               <Checkbox
                 id={`item-${item.id}`}
