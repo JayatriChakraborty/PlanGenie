@@ -1,21 +1,34 @@
 
+import { useState } from 'react';
 import Header from '@/components/Header';
 import BottomNav from '@/components/BottomNav';
 import Tracker from '@/components/Tracker';
 import HabitTracker from '@/components/HabitTracker';
+import NotesPage from '@/pages/NotesPage';
+import CalendarPage from '@/pages/CalendarPage';
+import PromodoPage from '@/pages/PromodoPage';
 
 const Index = () => {
+  const [activeView, setActiveView] = useState('Tracker');
+
   return (
     <div className="antialiased">
       <div className="relative min-h-screen w-full">
         <Header />
         
         <main className="pt-20 pb-24">
-          <HabitTracker />
-          <Tracker />
+          {activeView === 'Tracker' && (
+            <>
+              <HabitTracker />
+              <Tracker />
+            </>
+          )}
+          {activeView === 'Calendar' && <CalendarPage />}
+          {activeView === 'Notes' && <NotesPage />}
+          {activeView === 'Promodo' && <PromodoPage />}
         </main>
         
-        <BottomNav />
+        <BottomNav activeView={activeView} setActiveView={setActiveView} />
       </div>
     </div>
   );
