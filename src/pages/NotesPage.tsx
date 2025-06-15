@@ -39,7 +39,7 @@ const NotesPage = () => {
   };
 
   return (
-    <div className="p-4 md:p-6">
+    <div className="p-4 md:p-6 bg-gray-50">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold text-foreground font-serif">My Notes</h2>
         <Button onClick={() => setCreateDialogOpen(true)}>
@@ -49,9 +49,9 @@ const NotesPage = () => {
 
       {notes.length > 0 ? (
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 animate-fade-in">
-          {notes.map(note => (
+          {notes.map((note, index) => (
             <div key={note.id} onClick={() => handleNoteClick(note)}>
-              <NoteCard note={note} onDelete={deleteNote} />
+              <NoteCard note={note} onDelete={deleteNote} colorIndex={index} />
             </div>
           ))}
         </div>
