@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -13,15 +12,13 @@ interface NoteCardProps {
 }
 
 const colorPalettes = [
-  { bg: 'bg-[#a35b6e]', text: 'text-white', muted: 'text-rose-100', border: 'border-transparent' },
-  { bg: 'bg-[#d07e67]', text: 'text-white', muted: 'text-orange-100', border: 'border-transparent' },
-  { bg: 'bg-[#6b82a8]', text: 'text-white', muted: 'text-blue-100', border: 'border-transparent' },
-  { bg: 'bg-[#5e9d82]', text: 'text-white', muted: 'text-green-100', border: 'border-transparent' },
-  { bg: 'bg-[#4a5568]', text: 'text-white', muted: 'text-gray-200', border: 'border-transparent' },
-  { bg: 'bg-amber-100', text: 'text-amber-800', muted: 'text-amber-700', border: 'border-amber-200' },
-  { bg: 'bg-lime-100', text: 'text-lime-800', muted: 'text-lime-700', border: 'border-lime-200' },
+  { bg: 'bg-primary/80', text: 'text-primary-foreground', muted: 'text-primary-foreground/90', border: 'border-transparent' },
+  { bg: 'bg-secondary', text: 'text-secondary-foreground', muted: 'text-secondary-foreground/90', border: 'border-secondary-foreground/20' },
+  { bg: 'bg-accent', text: 'text-accent-foreground', muted: 'text-accent-foreground/90', border: 'border-accent-foreground/20' },
+  { bg: 'bg-destructive/80', text: 'text-destructive-foreground', muted: 'text-destructive-foreground/90', border: 'border-destructive-foreground/20' },
+  { bg: 'bg-card', text: 'text-card-foreground', muted: 'text-muted-foreground', border: 'border-border' },
+  { bg: 'bg-muted', text: 'text-muted-foreground', muted: 'text-muted-foreground/90', border: 'border-border' },
 ];
-
 
 const NoteCard = ({ note, onDelete, colorIndex }: NoteCardProps) => {
   const handleDelete = (e: React.MouseEvent) => {

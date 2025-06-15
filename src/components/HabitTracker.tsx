@@ -118,7 +118,7 @@ const HabitTracker = () => {
           value={newHabitText}
           onChange={(e) => setNewHabitText(e.target.value)}
           placeholder="Add a new habit..."
-          className="bg-white/50 focus:bg-white/70 border-0 ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="bg-card/50 focus:bg-card/70 border-0 ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         />
         <Button type="submit" size="icon" className="flex-shrink-0">
           <Plus className="h-4 w-4" />

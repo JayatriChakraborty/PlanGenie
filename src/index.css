@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500&display=swap');
 
 @tailwind base;
@@ -7,33 +6,33 @@
 
 @layer base {
   :root {
-    --background: 40 30% 96%; /* Off-white/Beige */
-    --foreground: 30 10% 25%; /* Dark Brown/Gray */
+    --background: 29 87% 94%;        /* Light peachy orange */
+    --foreground: 24 8% 32%;         /* Dark brown */
 
-    --card: 40 30% 99%; /* Lighter beige */
-    --card-foreground: 30 10% 25%;
+    --card: 29 87% 97%;              /* Lighter peachy orange */
+    --card-foreground: 24 8% 32%;
 
-    --popover: 40 30% 99%;
-    --popover-foreground: 30 10% 25%;
+    --popover: 29 87% 97%;
+    --popover-foreground: 24 8% 32%;
 
-    --primary: 90 20% 65%; /* Muted Green */
-    --primary-foreground: 90 20% 98%;
+    --primary: 27 100% 65%;          /* Vibrant orange */
+    --primary-foreground: 27 100% 98%; /* Almost white */
 
-    --secondary: 45 40% 90%; /* Light Yellow */
-    --secondary-foreground: 30 10% 25%;
+    --secondary: 148 33% 86%;        /* Muted green */
+    --secondary-foreground: 148 20% 30%; /* Dark green */
 
-    --muted: 40 20% 92%;
-    --muted-foreground: 30 8% 45%;
+    --muted: 29 50% 90%;
+    --muted-foreground: 24 8% 45%;
 
-    --accent: 0 50% 80%; /* Muted Pink/Red */
-    --accent-foreground: 30 10% 25%;
+    --accent: 250 68% 91%;           /* Muted purple */
+    --accent-foreground: 250 30% 30%;  /* Dark purple */
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 70% 85%;        /* Soft pink/red */
+    --destructive-foreground: 0 30% 30%; /* Dark red/brown */
 
-    --border: 30 10% 85%; /* Light gray-brown border */
-    --input: 30 10% 90%;
-    --ring: 90 20% 65%;
+    --border: 29 40% 85%;
+    --input: 29 40% 90%;
+    --ring: 27 100% 65%;
 
     --radius: 0.8rem;
   }
@@ -79,4 +78,3 @@
     min-height: 100vh;
   }
 }
-

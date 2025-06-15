@@ -42,7 +42,7 @@ const Tracker = () => {
           value={newItemText}
           onChange={(e) => setNewItemText(e.target.value)}
           placeholder="Add a new goal..."
-          className="h-9 text-sm bg-white/50 focus:bg-white/70 border-0 ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          className="h-9 text-sm bg-card/50 focus:bg-card/70 border-0 ring-offset-background focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         />
         <Button type="submit" size="icon" className="flex-shrink-0 h-9 w-9">
           <Plus className="h-4 w-4" />
@@ -69,8 +69,8 @@ const Tracker = () => {
               />
               <label
                 htmlFor={`item-${item.id}`}
-                className={`flex-grow text-gray-700 transition-all text-sm ${
-                  item.completed ? 'line-through text-gray-400' : ''
+                className={`flex-grow text-foreground transition-all text-sm ${
+                  item.completed ? 'line-through text-muted-foreground' : ''
                 }`}
               >
                 {item.text}
@@ -79,7 +79,7 @@ const Tracker = () => {
                 variant="ghost"
                 size="icon"
                 onClick={() => deleteItem(item.id)}
-                className="h-8 w-8 text-gray-400 hover:text-destructive hover:bg-destructive/10 rounded-full"
+                className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10 rounded-full"
               >
                 <X className="h-4 w-4" />
               </Button>

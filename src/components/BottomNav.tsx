@@ -16,7 +16,7 @@ interface BottomNavProps {
 
 const BottomNav = ({ activeView, setActiveView }: BottomNavProps) => {
   return (
-    <nav className="fixed bottom-0 left-0 right-0 h-20 bg-white/40 backdrop-blur-lg border-t border-white/30 z-20">
+    <nav className="fixed bottom-0 left-0 right-0 h-20 bg-card/60 backdrop-blur-lg border-t border-border/50 z-20">
       <div className="flex justify-around items-center h-full max-w-md mx-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
@@ -26,7 +26,7 @@ const BottomNav = ({ activeView, setActiveView }: BottomNavProps) => {
               key={item.name}
               onClick={() => setActiveView(item.name)}
               className={`flex flex-col items-center justify-center gap-1 w-20 transition-all duration-300 ${
-                isActive ? 'text-primary' : 'text-gray-500'
+                isActive ? 'text-primary' : 'text-muted-foreground'
               }`}
             >
               <Icon className="w-6 h-6" />
