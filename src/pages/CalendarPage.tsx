@@ -31,11 +31,17 @@ const CalendarPage = () => {
     if (!api) {
       return;
     }
-    api.on('select', () => {
-      setCurrentMonthIndex(api.selectedScrollSnap());
-    });
+
+    const onSelect = () => {
+      if (api) {
+        setCurrentMonthIndex(api.selectedScrollSnap());
+      }
+    };
+
+    api.on('select', onSelect);
+
     return () => {
-      api?.off('select');
+      api.off('select', onSelect);
     };
   }, [api]);
 
