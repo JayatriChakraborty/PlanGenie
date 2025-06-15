@@ -1,4 +1,3 @@
-
 import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -118,6 +117,10 @@ const ProfilePage = () => {
           <ChevronLeft className="h-6 w-6" />
         </Button>
         <h1 className="text-3xl font-bold">Profile</h1>
+        <Button onClick={handleSaveProfile} className="absolute right-0">
+            <Save className="mr-2 h-4 w-4" />
+            Save
+        </Button>
       </div>
 
       <div className="flex justify-center mb-8">
@@ -185,13 +188,6 @@ const ProfilePage = () => {
         <div className="space-y-2">
           <Label htmlFor="email">Email Address</Label>
           <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="john.doe@example.com" />
-        </div>
-        
-        <div className="flex justify-end">
-            <Button onClick={handleSaveProfile}>
-                <Save className="mr-2 h-4 w-4" />
-                Save Profile
-            </Button>
         </div>
         
         <div className="border-t pt-6 mt-6">
