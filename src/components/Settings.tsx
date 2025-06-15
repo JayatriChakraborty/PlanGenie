@@ -6,6 +6,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Settings as SettingsIcon, User, FileText, LogOut } from 'lucide-react';
+import { Link } from "react-router-dom";
 
 const menuItems = [
   { name: 'Profile', icon: User },
@@ -25,13 +26,21 @@ export function Settings() {
       <DropdownMenuContent side="top" align="center" className="mb-2 w-56">
         {menuItems.map((item) => (
           <DropdownMenuItem key={item.name} className="gap-2" asChild>
-            <a href="#" className="cursor-pointer">
-              <item.icon className="h-5 w-5 text-primary" />
-              <span>{item.name}</span>
-            </a>
+            {item.name === 'Profile' ?
+              <Link to="/profile" className="cursor-pointer w-full flex items-center gap-2">
+                <item.icon className="h-5 w-5 text-primary" />
+                <span>{item.name}</span>
+              </Link>
+             :
+              <a href="#" className="cursor-pointer w-full flex items-center gap-2">
+                <item.icon className="h-5 w-5 text-primary" />
+                <span>{item.name}</span>
+              </a>
+            }
           </DropdownMenuItem>
         ))}
       </DropdownMenuContent>
     </DropdownMenu>
   );
 }
+
