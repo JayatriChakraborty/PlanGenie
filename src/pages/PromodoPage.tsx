@@ -3,7 +3,7 @@ import { useState } from 'react';
 import TimerFeature from '@/components/TimerFeature';
 import StopwatchFeature from '@/components/StopwatchFeature';
 import { Button } from '@/components/ui/button';
-import { Timer, Stopwatch } from 'lucide-react';
+import { Timer, Clock } from 'lucide-react';
 
 const PromodoPage = () => {
   const [activeFeature, setActiveFeature] = useState<'timer' | 'stopwatch'>('timer');
@@ -25,7 +25,7 @@ const PromodoPage = () => {
             variant={activeFeature === 'stopwatch' ? 'default' : 'ghost'}
             className="flex-1"
           >
-            <Stopwatch className="mr-2 h-4 w-4" />
+            <Clock className="mr-2 h-4 w-4" />
             Stopwatch
           </Button>
         </div>
