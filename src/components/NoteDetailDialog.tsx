@@ -34,10 +34,10 @@ const NoteDetailDialog = ({ note, isOpen, onOpenChange, updateNote }: NoteDetail
             remarkPlugins={[remarkGfm]}
             rehypePlugins={[rehypeRaw]}
             components={{
-              h2: ({ ...props }) => <h2 className="text-xl font-bold mt-4 mb-2 border-b pb-2" {...props} />,
-              ul: ({ ...props }) => <ul className="list-disc space-y-2 pl-5" {...props} />,
-              li: ({ ...props }) => <li className="[&>p]:inline" {...props} />,
-              p: ({ ...props }) => <p className="leading-7 my-2" {...props} />,
+              h2: ({ node, ...props }) => <h2 className="text-xl font-bold mt-4 mb-2 border-b pb-2" {...props} />,
+              ul: ({ node, ...props }) => <ul className="list-disc space-y-2 pl-5" {...props} />,
+              li: ({ node, ...props }) => <li className="[&>p]:inline" {...props} />,
+              p: ({ node, ...props }) => <p className="leading-7 my-2" {...props} />,
               input: ({ node, checked, ...props }) => {
                 if (props.type === 'checkbox') {
                   const handleCheckboxChange = () => {
@@ -68,9 +68,9 @@ const NoteDetailDialog = ({ note, isOpen, onOpenChange, updateNote }: NoteDetail
                 }
                 return <input checked={checked} {...props} className="mr-2 h-4 w-4 align-middle" />;
               },
-              img: ({...props}) => <img className="max-w-full h-auto rounded-lg my-4" {...props} alt={props.alt || ''} />,
-              audio: ({...props}) => <audio controls className="w-full my-4" {...props} />,
-              video: ({...props}) => <video controls className="max-w-full h-auto rounded-lg my-4" {...props} />,
+              img: ({node, ...props}) => <img className="max-w-full h-auto rounded-lg my-4" {...props} alt={props.alt || ''} />,
+              audio: ({node, ...props}) => <audio controls className="w-full my-4" {...props} />,
+              video: ({node, ...props}) => <video controls className="max-w-full h-auto rounded-lg my-4" {...props} />,
             }}
           >{note.content}</ReactMarkdown>
         </div>
