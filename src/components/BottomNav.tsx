@@ -1,5 +1,6 @@
 
 import { List, Calendar, Timer, StickyNote } from 'lucide-react';
+import { Settings } from './Settings';
 
 const navItems = [
   { name: 'Tracker', icon: List, active: true },
@@ -29,6 +30,7 @@ const BottomNav = () => {
             </button>
           );
         })}
+        <Settings />
       </div>
     </nav>
   );
