@@ -17,47 +17,35 @@ import {
 import { Camera, Trash2, User as UserIcon, Upload, ChevronLeft, Save } from 'lucide-react';
 import { toast } from 'sonner';
 import { db, storage } from '@/lib/firebase';
-import { doc, getDoc, setDoc, deleteDoc } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { useQueryClient } from '@tanstack/react-query';
+import { useUser } from '@/hooks/useUser';
 
 const ProfilePage = () => {
   // Using a hardcoded user ID for now. In a real app, this would come from an auth context.
   const userId = 'testUser';
 
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const { user, isLoading, queryKey } = useUser();
+
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [email, setEmail] = useState('');
-  const [isLoading, setIsLoading] = useState(true);
 
   const takePictureRef = useRef<HTMLInputElement>(null);
   const uploadGalleryRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    const fetchProfile = async () => {
-      if (!userId) return;
-      setIsLoading(true);
-      try {
-        const userDocRef = doc(db, 'users', userId);
-        const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists()) {
-          const data = userDoc.data();
-          setFirstName(data.firstName || '');
-          setLastName(data.lastName || '');
-          setEmail(data.email || '');
-          setProfileImage(data.profileImage || null);
-        }
-      } catch (error) {
-        console.error("Error fetching profile:", error);
-        toast.error("Failed to load profile data.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchProfile();
-  }, [userId]);
+    if (user) {
+      setFirstName(user.firstName || '');
+      setLastName(user.lastName || '');
+      setEmail(user.email || '');
+      setProfileImage(user.profileImage || null);
+    }
+  }, [user]);
 
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
@@ -73,7 +61,7 @@ const ProfilePage = () => {
         const userDocRef = doc(db, 'users', userId);
         await setDoc(userDocRef, { profileImage: downloadURL }, { merge: true });
 
-        setProfileImage(downloadURL);
+        queryClient.invalidateQueries({ queryKey });
         toast.success("Profile picture updated!", { id: toastId });
       } catch (error) {
         console.error("Error uploading file:", error);
@@ -88,6 +76,7 @@ const ProfilePage = () => {
     try {
       const userDocRef = doc(db, 'users', userId);
       await setDoc(userDocRef, { firstName, lastName, email }, { merge: true });
+      queryClient.invalidateQueries({ queryKey });
       toast.success("Profile saved successfully!", { id: toastId });
     } catch (error) {
       console.error("Error saving profile:", error);
@@ -105,6 +94,7 @@ const ProfilePage = () => {
         const userDocRef = doc(db, 'users', userId);
         await deleteDoc(userDocRef);
         // Note: This does not delete associated data in Storage. A real implementation would need a Cloud Function for that.
+        queryClient.invalidateQueries({ queryKey });
         toast.success("Account deleted successfully.", { id: toastId });
         navigate('/');
     } catch (error) {
