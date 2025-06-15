@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { TrackerItem } from '@/lib/types';
 import { Button } from '@/components/ui/button';
@@ -42,7 +43,7 @@ const Tracker = () => {
 
   return (
     <div className="p-4 md:p-6">
-      <h2 className="text-2xl font-bold text-foreground mb-6 font-serif">Daily Tracker</h2>
+      <h2 className="text-xl font-bold text-foreground mb-6 font-serif">Daily Tracker</h2>
 
       <form onSubmit={handleAddItem} className="flex gap-2 mb-6">
         <Input
